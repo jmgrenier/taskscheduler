@@ -1,0 +1,49 @@
+- Path: \myApp\simplest_task
+  RegistrationInfo:
+    Description: A task only needs a path and an action to be registered!
+  Actions:
+    - Type: EXEC
+      Path: path\to\exe
+
+- Path: \myApp\daily_task
+  RegistrationInfo:
+    Description: A task that executes a Python script with a daily trigger and a 5 minute execution limit.
+  Settings:
+    ExecutionTimeLimit: PT5M
+  Triggers:
+    - Type: DAILY
+      StartBoundary: 2024-09-03T00:00:00
+  Actions:
+    - Type: EXEC
+      Path: path\to\python.exe
+      Arguments: path\to\myApp\daily_task.py
+      WorkingDirectory: path\to\myApp
+
+- Path: \myApp\multi_task
+  RegistrationInfo:
+    Description: >-
+      A task that executes a Python script with multiple triggers and a 1 hour execution limit.
+      If it fails, it will be retried 2 times with a 1 minute interval between each try.
+      It will start as soon as possible if the last execution was missed.
+  Settings:
+    ExecutionTimeLimit: PT1H
+    RestartCount: 2
+    RestartInterval: PT1M
+    StartWhenAvailable: true
+  Triggers:
+    - Type: DAILY
+      StartBoundary: 2024-09-03T01:00:00
+    - Type: MONTHLY
+      StartBoundary: 2024-09-04T02:00:00
+      DaysOfMonth:
+        - "1" # must be str
+        - "2"
+    - Type: TIME
+      StartBoundary: 2024-09-05T03:00:00
+      Repetition:
+        Interval: PT10M
+  Actions:
+    - Type: EXEC
+      Path: path\to\python.exe
+      Arguments: path\to\myApp\multi_task.py
+      WorkingDirectory: path\to\myApp
